@@ -3,22 +3,26 @@
 #include <stdlib.h> //in order to call srand function
 #include <math.h> //in order to use absolute function
 
+#define SIZE 17
+
 //This function prints array which is given by parameter. I use it to print game map.
-void PrintArray(const char array[17][34]){
+void PrintArray(const char array[SIZE][2*SIZE]){
 	//it prints game map matrix represented by 2-D array, row by row.  
-	for (int i=0;i<17;++i)
+	int i;
+	for (i=0;i<SIZE;++i)
 	{
 		printf("%s\n",array[i]);
 	}
 }
 //game runs in StartGame function. It gets game map from parameter and process it to run game.
-void StartGame(char mapp[17][34]){
+void StartGame(char mapp[SIZE][2*SIZE]){
 	//I declared another array to store map since original map should not be changed. Player can play several times. 
-	char map[17][34];
+	char map[SIZE][2*SIZE];
 	//Loop sets all elements of map same as original map.
-	for (int i=0;i<17;++i)
+	int i,j;
+	for (i=0;i<SIZE;++i)
 	{
-		for (int j=0;j<34;++j)
+		for (j=0;j<2*SIZE;++j)
 		{
 			map[i][j]=mapp[i][j];
 		}
@@ -48,15 +52,15 @@ void StartGame(char mapp[17][34]){
 	//generating random poritions for thief and police than checking if the positions are suitable for conditions. 
 	do
 	{
-		thiefPosX = rand() % 16;
-		policePosX = rand() % 16;
-		thiefPosY = rand() % 16;
-		policePosY = rand() % 16;
+		thiefPosX = rand() % (SIZE-1);
+		policePosX = rand() % (SIZE-1);
+		thiefPosY = rand() % (SIZE-1);
+		policePosY = rand() % (SIZE-1);
 		distancePtoT = abs(thiefPosY-policePosY) + abs(thiefPosX-policePosX);
 		distancePtoE = abs(policePosY-7) + abs(policePosX-15);
 		distanceTtoE = abs(thiefPosY-7) + abs(thiefPosX-15);
 	}
-	while(distanceTtoE<16 || distancePtoT<16 || distancePtoE<16 || map[thiefPosY+1][2*thiefPosX+1] == 'W' || map[policePosY+1][2*policePosX+1] == 'W');
+	while(distanceTtoE<(SIZE-1) || distancePtoT<(SIZE-1) || distancePtoE<(SIZE-1) || map[thiefPosY+1][2*thiefPosX+1] == 'W' || map[policePosY+1][2*policePosX+1] == 'W');
 	//After determining right positions i put characters. 
 	map[thiefPosY+1][2*thiefPosX+1] = 'T';
 	map[policePosY+1][2*policePosX+1] = 'P';
@@ -346,19 +350,21 @@ void StartGame(char mapp[17][34]){
 				if (map[policePosY][2*(policePosX)+1]!='W')
 					movePos[3]=1;
 			}
+			
+			int i,j,k;
 			//Choose random feasible square if there is more than one feasible squares. There can be maximum 3 feasible squares. 
-			for (int i=0;i<4;++i)
+			for (i=0;i<4;++i)
 			{
 				if (movePos[i]==1||movePos[i]==2)
 				{
 					moveWay=i;
-					for (int j=0;j<4;++j)
+					for (j=0;j<4;++j)
 					{
 						int random=rand()%2;
 						if (i!=j&&(movePos[j]==1||movePos[j]==2))
 						{
 							moveWay=(random==0)?i:j;
-							for (int k=0;k<4;++k)
+							for (k=0;k<4;++k)
 							{
 								int random2=rand()%3;
 								if (i!=k&&(movePos[k]==1||movePos[k]==2)&&j!=k)
@@ -454,7 +460,7 @@ int main(){
 	//variable declarations 
 	char answer='X'; // answer of the play more question.
 	char ignore; //character to handle enter char from scanf.
-	char background[17][34] = {
+	char background[SIZE][2*SIZE] = {
 		" _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \0",
 		"|_|_|_|_|_|_|_|_|W|_|_|_|_|_|_|_|\0",
 		"|_|_|_|_|_|_|_|_|W|_|_|_|_|_|_|_|\0",
